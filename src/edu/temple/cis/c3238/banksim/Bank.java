@@ -19,6 +19,7 @@ public class Bank {
     private final int numAccounts;
     AtomicInteger signal;
     Semaphore semaphore = new Semaphore(1);
+    private boolean open = true;
 
 
 
@@ -27,7 +28,7 @@ public class Bank {
         this.numAccounts = numAccounts;
         accounts = new Account[numAccounts];
         for (int i = 0; i < accounts.length; i++) {
-            accounts[i] = new Account(i, initialBalance);
+            accounts[i] = new Account(i, initialBalance, this);
         }
         numTransactions = 0;
         signal = new AtomicInteger(0);
@@ -37,12 +38,17 @@ public class Bank {
         int lessAmount = Math.min( from, to );
         int moreAmount = Math.max( from, to );
 
-        synchronized ( accounts[lessAmount] ) {
-            synchronized ( accounts[moreAmount] ) {
+        //check if account needs to wait for more funds
+        accounts[from].waitForAvailableFunds(amount);
+
+                 increment();
+
                 semaphore.acquire();
                 if (accounts[from].withdraw(amount)) {
                     accounts[to].deposit(amount);
                     System.out.printf("Account %d successfully transferred $%d to Account %d.\n", from, amount, to);
+                    decrement();
+                    semaphore.release();
                 }
                 else
                     System.out.printf("Transfer of $%d from Account %d to Account %d failed.\n", amount, from, to);
@@ -52,26 +58,45 @@ public class Bank {
 
                     test();
                 }
-                semaphore.release();
+
+
+
+    }
+
+
+    void closeBank(){
+        synchronized (this){
+            open = false;
+        }
+        for(Account account: accounts){
+            synchronized(account){
+                account.notifyAll();
             }
         }
     }
 
-
-
+    synchronized boolean isOpen(){
+        return open;
+    }
 
 
     public int getNumAccounts() {
         return numAccounts;
     }
 
+    synchronized void increment(){
+        signal.incrementAndGet();
+    }
+    synchronized void decrement(){
+        signal.decrementAndGet();
+    }
 
     public boolean shouldTest() {
         return ++numTransactions % NTEST == 0;
     }
 
     public synchronized void test() {
-        while(signal.get() != 0){
+        while(signal.get() != 0 && isOpen()){
             try{
                 wait(10);
 

@@ -26,6 +26,8 @@ public class BankSimMain {
         // Wait for all threads to complete execution.
         for(Thread thread : threads) {
             thread.join();
+
+
         }
 
         // Test to see whether the balances have remained the same
