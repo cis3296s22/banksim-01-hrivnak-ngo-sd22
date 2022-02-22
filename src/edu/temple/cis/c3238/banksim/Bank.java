@@ -38,6 +38,8 @@ public class Bank {
         int lessAmount = Math.min( from, to );
         int moreAmount = Math.max( from, to );
 
+
+
         //check if account needs to wait for more funds
         accounts[from].waitForAvailableFunds(amount);
 
@@ -49,6 +51,7 @@ public class Bank {
                     System.out.printf("Account %d successfully transferred $%d to Account %d.\n", from, amount, to);
                     decrement();
                     semaphore.release();
+
                 }
                 else
                     System.out.printf("Transfer of $%d from Account %d to Account %d failed.\n", amount, from, to);
@@ -77,6 +80,10 @@ public class Bank {
 
     synchronized boolean isOpen(){
         return open;
+    }
+
+    public long getNumTransactions(){
+        return numTransactions;
     }
 
 

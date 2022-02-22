@@ -12,11 +12,13 @@ public class Account {
     private volatile int balance;
     private final int id;
     private Bank bank;
+    private int numTransactions;
 
     public Account(int id, int initialBalance, Bank bank) {
         this.id = id;
         this.balance = initialBalance;
         this.bank = bank;
+        numTransactions = 0;
     }
 
     public int getBalance() {
@@ -53,6 +55,13 @@ public class Account {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void addTransaction(){
+        numTransactions++;
+    }
+    public int getNumTransactions(){
+        return numTransactions;
     }
     
     @Override

@@ -26,6 +26,7 @@ class TransferThread extends Thread {
 
 
         for (int i = 0; i < numTransactions; i++) {
+
             int toAccount = (int) (bank.getNumAccounts() * Math.random());
             int amount = (int) (maxAmount * Math.random());
             try {
@@ -36,11 +37,11 @@ class TransferThread extends Thread {
             }
         }
 
+        
+
         System.out.println("Bank : Finished Processing " + numTransactions + " transactions for "+ bank.getNumAccounts() + " accounts");
-
         bank.closeBank();
-
-
         System.out.printf("%-30s Account[%d] has finished with its transactions.\n", Thread.currentThread().toString(), fromAccount);
+        System.out.println("Account: " + fromAccount + " number of transactions " + bank.getNumTransactions());
     }
 }
