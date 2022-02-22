@@ -39,15 +39,18 @@ public class Bank {
                     accounts[to].deposit(amount);
                     System.out.printf("Account %d successfully transferred $%d to Account %d.\n", from, amount, to);
                 } 
-                else
+                else 
                     System.out.printf("Transfer of $%d from Account %d to Account %d failed.\n", amount, from, to);
-                semaphore.release();
-        // Uncomment line when ready to start Task 3.
-                if (shouldTest()) 
+                
+                    // Uncomment line when ready to start Task 3.
+                if (shouldTest()){ 
                     test();
                 }
+                semaphore.release();
+            }
         }
     }
+    
 
     public void test() {
         int totalBalance = 0;

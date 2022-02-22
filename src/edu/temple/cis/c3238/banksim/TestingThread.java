@@ -32,7 +32,8 @@ public class TestingThread extends Thread{
             if (totalBalance != numAccounts * initialBalance) {
                 System.out.printf("%-30s Total balance changed!\n", transferThread.toString());
                 System.exit(0);
-            } else {
+            } 
+            else {
                 System.out.printf("%-30s Total balance unchanged.\n", transferThread.toString());
             }
             semaphore.release();
