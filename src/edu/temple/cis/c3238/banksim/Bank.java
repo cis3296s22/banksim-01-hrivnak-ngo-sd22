@@ -1,5 +1,6 @@
 package edu.temple.cis.c3238.banksim;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Cay Horstmann
@@ -16,7 +17,10 @@ public class Bank {
     private long numTransactions = 0;
     private final int initialBalance;
     private final int numAccounts;
+    AtomicInteger signal;
     Semaphore semaphore = new Semaphore(1);
+
+
 
     public Bank(int numAccounts, int initialBalance) {
         this.initialBalance = initialBalance;
@@ -26,6 +30,7 @@ public class Bank {
             accounts[i] = new Account(i, initialBalance);
         }
         numTransactions = 0;
+        signal = new AtomicInteger(0);
     }
 
     public void transfer(int from, int to, int amount) throws InterruptedException{
@@ -38,12 +43,13 @@ public class Bank {
                 if (accounts[from].withdraw(amount)) {
                     accounts[to].deposit(amount);
                     System.out.printf("Account %d successfully transferred $%d to Account %d.\n", from, amount, to);
-                } 
-                else 
+                }
+                else
                     System.out.printf("Transfer of $%d from Account %d to Account %d failed.\n", amount, from, to);
-                
-                    // Uncomment line when ready to start Task 3.
-                if (shouldTest()){ 
+
+                // Uncomment line when ready to start Task 3.
+                if (shouldTest()){
+
                     test();
                 }
                 semaphore.release();
@@ -51,16 +57,31 @@ public class Bank {
         }
     }
 
+
+
+
+
     public int getNumAccounts() {
         return numAccounts;
     }
-    
-    
+
+
     public boolean shouldTest() {
         return ++numTransactions % NTEST == 0;
     }
 
-    public void test() {
-        new TestingThread( accounts, initialBalance, numAccounts, Thread.currentThread(), semaphore).start();
+    public synchronized void test() {
+        while(signal.get() != 0){
+            try{
+                wait(10);
+
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+        if(signal.get() == 0){
+            new TestingThread( accounts, initialBalance, numAccounts, Thread.currentThread(), semaphore).start();
+        }
+    notifyAll();
     }
 }
