@@ -1,5 +1,5 @@
 package edu.temple.cis.c3238.banksim;
-
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 /**
  * @author Cay Horstmann
@@ -37,11 +37,21 @@ class TransferThread extends Thread {
             }
         }
 
-        
+        try{
+            Thread.sleep(250);
+            bank.test();
+            Thread.sleep(250);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        bank.doneTrans();
 
-        System.out.println("Bank : Finished Processing " + numTransactions + " transactions for "+ bank.getNumAccounts() + " accounts");
-        bank.closeBank();
+        System.out.println("------------------------------------------------------------");
         System.out.printf("%-30s Account[%d] has finished with its transactions.\n", Thread.currentThread().toString(), fromAccount);
-        System.out.println("Account: " + fromAccount + " number of transactions " + bank.getNumTransactions());
+        System.out.println("Bank : Finished Processing " + numTransactions + " transactions for account number : "+ fromAccount);
+        System.out.println("Total Number of Transactions " + bank.getNumTransactions() + " // Account["+fromAccount+"] had " + numTransactions + " transactions");
+        bank.closeBank();
+
+        System.exit(0);
     }
 }

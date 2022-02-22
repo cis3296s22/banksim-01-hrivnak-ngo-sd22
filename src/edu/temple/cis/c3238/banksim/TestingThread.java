@@ -29,6 +29,7 @@ public class TestingThread extends Thread{
 
         try {
             semaphore.acquire();
+
             System.out.println("-- TESTING THREAD --");
             int totalBalance = 0;
             for (Account account : accounts) {
