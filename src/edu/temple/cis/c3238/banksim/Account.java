@@ -49,7 +49,7 @@ public class Account {
         while(bank.isOpen() && (amount > balance)){
             System.out.printf("wait- Account %d, Balance %d, Amount %d\n", id, balance, amount);
             try{
-                System.out.println("waiting");
+
                 wait();
             }catch (InterruptedException e){
                 e.printStackTrace();

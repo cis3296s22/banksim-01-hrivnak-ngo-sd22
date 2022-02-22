@@ -17,6 +17,7 @@ public class Bank {
     private long numTransactions = 0;
     private final int initialBalance;
     private final int numAccounts;
+    public int donetrans = 0;
     AtomicInteger signal;
     Semaphore semaphore = new Semaphore(1);
     private boolean open = true;
@@ -54,7 +55,7 @@ public class Bank {
 
                 }
                 else
-                    System.out.printf("Transfer of $%d from Account %d to Account %d failed.\n", amount, from, to);
+                    System.out.printf("Bank Closed: Transfer of $%d from Account %d to Account %d failed\n", amount, from, to);
 
                 // Uncomment line when ready to start Task 3.
                 if (shouldTest()){
@@ -100,6 +101,11 @@ public class Bank {
 
     public boolean shouldTest() {
         return ++numTransactions % NTEST == 0;
+    }
+
+    public int doneTrans(){
+        donetrans = 1;
+        return donetrans;
     }
 
     public synchronized void test() {
