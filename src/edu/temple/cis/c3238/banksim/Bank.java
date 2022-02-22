@@ -50,23 +50,6 @@ public class Bank {
             }
         }
     }
-    
-
-    public void test() {
-        int totalBalance = 0;
-        for (Account account : accounts) {
-            System.out.printf("%-30s %s%n", 
-                    Thread.currentThread().toString(), account.toString());
-            totalBalance += account.getBalance();
-        }
-        System.out.printf("%-30s Total balance: %d\n", Thread.currentThread().toString(), totalBalance);
-        if (totalBalance != numAccounts * initialBalance) {
-            System.out.printf("%-30s Total balance changed!\n", Thread.currentThread().toString());
-            System.exit(0);
-        } else {
-            System.out.printf("%-30s Total balance unchanged.\n", Thread.currentThread().toString());
-        }
-    }
 
     public int getNumAccounts() {
         return numAccounts;
@@ -77,7 +60,7 @@ public class Bank {
         return ++numTransactions % NTEST == 0;
     }
 
-    public void Test() {
+    public void test() {
         new TestingThread( accounts, initialBalance, numAccounts, Thread.currentThread(), semaphore).start();
     }
 }
